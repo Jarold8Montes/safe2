@@ -1,0 +1,981 @@
+{
+    "info": {
+        "_postman_id": "YOUR_POSTMAN_COLLECTION_ID",
+        "name": "ESP32 Fleet API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "YOUR_EXPORTER_ID"
+    },
+    "item": [
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/health",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "health"
+                    ]
+                },
+                "description": "Checks the health of the API. Returns 'status: ok' if the API is running."
+            },
+            "response": []
+        },
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "pm.environment.set(\"jwtToken\", jsonData.access_token);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"supervisor@example.com\",\n    \"password\": \"password\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Authenticates a supervisor user and obtains a JWT token. The token is automatically saved to the 'jwtToken' environment variable."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Refresh Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "pm.environment.set(\"jwtToken\", jsonData.access_token);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": ""
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/refresh",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "refresh"
+                            ]
+                        },
+                        "description": "Refreshes an expired JWT token. The new token is automatically saved to the 'jwtToken' environment variable."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": ""
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/logout",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "logout"
+                            ]
+                        },
+                        "description": "Invalidates the current JWT token, effectively logging out the user."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Operadores",
+            "item": [
+                {
+                    "name": "Get All Operadores",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/operadores?page=1&per_page=10&order_by=created_at&order=desc",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "operadores"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "order_by",
+                                    "value": "created_at"
+                                },
+                                {
+                                    "key": "order",
+                                    "value": "desc"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a paginated list of all operators. Supports filtering, sorting, and pagination. Default per_page is 10."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Operador by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/operadores/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "operadores",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "OPERADOR_ID_HERE",
+                                    "description": "Replace with an actual Operador ID"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a single operator by their ID."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Operador",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id_operador\": \"OP-12345\",\n    \"nombre\": \"Juan Perez\",\n    \"foto_url\": \"http://example.com/juan.jpg\",\n    \"fecha_nacimiento\": \"1990-01-15\",\n    \"telefono\": \"+525512345678\",\n    \"factores_riesgo\": [\"Hipertensión arterial\"],\n    \"activo\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/operadores",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "operadores"
+                            ]
+                        },
+                        "description": "Creates a new operator. Replace example data with actual values. `id_operador` must be unique."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Operador",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nombre\": \"Juan Carlos Perez\",\n    \"telefono\": \"+525587654321\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/operadores/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "operadores",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "OPERADOR_ID_HERE",
+                                    "description": "Replace with an actual Operador ID"
+                                }
+                            ]
+                        },
+                        "description": "Updates an existing operator by their ID. Replace example data with actual values."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Operador",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/operadores/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "operadores",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "OPERADOR_ID_HERE",
+                                    "description": "Replace with an actual Operador ID"
+                                }
+                            ]
+                        },
+                        "description": "Deletes an operator by its ID."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Search Operadores",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/search/operadores?q=Juan",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "search",
+                                "operadores"
+                            ],
+                            "query": [
+                                {
+                                    "key": "q",
+                                    "value": "Juan",
+                                    "description": "Search query for operator name"
+                                }
+                            ]
+                        },
+                        "description": "Searches for operators by name (using text index). Returns a reduced result set."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Historial por Operador",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/historial/operador/:id?from=2025-01-01&to=2025-12-31&order_by=fecha&order=desc",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "historial",
+                                "operador",
+                                ":id"
+                            ],
+                            "query": [
+                                {
+                                    "key": "from",
+                                    "value": "2025-01-01",
+                                    "description": "Start date for filtering dictamenes"
+                                },
+                                {
+                                    "key": "to",
+                                    "value": "2025-12-31",
+                                    "description": "End date for filtering dictamenes"
+                                },
+                                {
+                                    "key": "order_by",
+                                    "value": "fecha"
+                                },
+                                {
+                                    "key": "order",
+                                    "value": "desc"
+                                }
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "OPERADOR_ID_HERE",
+                                    "description": "Replace with an actual Operador ID"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves the history of dictamenes for a specific operator. Supports date filtering, sorting, and pagination."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Tractos",
+            "item": [
+                {
+                    "name": "Get All Tractos",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/tractos?page=1&per_page=10&order_by=created_at&order=desc",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "tractos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "order_by",
+                                    "value": "created_at"
+                                },
+                                {
+                                    "key": "order",
+                                    "value": "desc"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a paginated list of all tractos. Supports filtering by 'placas', 'marca', 'modelo', 'activo', sorting, and pagination. Default per_page is 10."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Tracto by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/tractos/:tracto",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "tractos",
+                                ":tracto"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "tracto",
+                                    "value": "TRACTO_ID_HERE",
+                                    "description": "Replace with an actual Tracto ID"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a single tracto by its ID."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Tracto",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id_tracto\": \"TR-54321\",\n    \"placas\": \"ABC123\",\n    \"marca\": \"Volvo\",\n    \"modelo\": \"FH16\",\n    \"activo\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/tractos",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "tractos"
+                            ]
+                        },
+                        "description": "Creates a new tracto. Replace example data with actual values. `id_tracto` must be unique."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Tracto",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"modelo\": \"FH16 2023\",\n    \"activo\": false\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/tractos/:tracto",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "tractos",
+                                ":tracto"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "tracto",
+                                    "value": "TRACTO_ID_HERE",
+                                    "description": "Replace with an actual Tracto ID"
+                                }
+                            ]
+                        },
+                        "description": "Updates an existing tracto by its ID. Replace example data with actual values."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Tracto",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/tractos/:tracto",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "tractos",
+                                ":tracto"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "tracto",
+                                    "value": "TRACTO_ID_HERE",
+                                    "description": "Replace with an actual Tracto ID"
+                                }
+                            ]
+                        },
+                        "description": "Deletes a tracto by its ID."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Viajes",
+            "item": [
+                {
+                    "name": "Get All Viajes",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/viajes?page=1&per_page=10&order_by=fecha&order=desc",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "viajes"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "order_by",
+                                    "value": "fecha"
+                                },
+                                {
+                                    "key": "order",
+                                    "value": "desc"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a paginated list of all viajes. Supports filtering by 'origen', 'destino', 'operador_id', 'tracto_id', 'estado', 'from', 'to', sorting, and pagination. Default per_page is 10."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Viaje by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/viajes/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "viajes",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "VIAJE_ID_HERE",
+                                    "description": "Replace with an actual Viaje ID"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a single viaje by its ID."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Viaje",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id_viaje\": \"VJ-98765\",\n    \"origen\": \"Mexico City\",\n    \"destino\": \"Guadalajara\",\n    \"fecha\": \"2025-09-23T10:00:00Z\",\n    \"operador_id\": \"OPERADOR_ID_HERE\",\n    \"tracto_id\": \"TRACTO_ID_HERE\",\n    \"estado\": \"pendiente\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/viajes",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "viajes"
+                            ]
+                        },
+                        "description": "Creates a new viaje. Replace example data with actual values. `id_viaje` must be unique. `operador_id` and `tracto_id` should be valid IDs from existing operators and tractos."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Viaje",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"estado\": \"en_curso\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/viajes/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "viajes",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "VIAJE_ID_HERE",
+                                    "description": "Replace with an actual Viaje ID"
+                                }
+                            ]
+                        },
+                        "description": "Updates an existing viaje by its ID. Replace example data with actual values."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Change Viaje Estado",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"estado\": \"completado\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/viajes/:id/estado",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "viajes",
+                                ":id",
+                                "estado"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "VIAJE_ID_HERE",
+                                    "description": "Replace with an actual Viaje ID"
+                                }
+                            ]
+                        },
+                        "description": "Changes the status of a viaje. Valid states: 'pendiente', 'en_curso', 'completado', 'cancelado'."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Viaje",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/viajes/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "viajes",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "VIAJE_ID_HERE",
+                                    "description": "Replace with an actual Viaje ID"
+                                }
+                            ]
+                        },
+                        "description": "Deletes a viaje by its ID."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Dictamenes",
+            "item": [
+                {
+                    "name": "Get All Dictamenes",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/dictamenes?page=1&per_page=10&order_by=fecha&order=desc",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "dictamenes"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "order_by",
+                                    "value": "fecha"
+                                },
+                                {
+                                    "key": "order",
+                                    "value": "desc"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a paginated list of all dictamenes. Supports filtering by 'operador_id', 'viaje_id', 'apto', 'from', 'to', sorting, and pagination. Default per_page is 10."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Dictamen by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/dictamenes/:id",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "dictamenes",
+                                ":id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "DICTAMEN_ID_HERE",
+                                    "description": "Replace with an actual Dictamen ID"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a single dictamen by its ID."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Dictamen (Web/App)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"viaje_id\": \"VIAJE_ID_HERE\",\n    \"operador_id\": \"OPERADOR_ID_HERE\",\n    \"tracto_id\": \"TRACTO_ID_HERE\",\n    \"apto\": true,\n    \"bmp\": 120,\n    \"fecha\": \"2025-09-23T14:05:00Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/dictamenes",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "dictamenes"
+                            ]
+                        },
+                        "description": "Creates a new dictamen from a web or mobile application. Requires JWT token. Replace example data with actual values. `operador_id`, `viaje_id`, `tracto_id` should be valid IDs from existing records."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Dictamen (Device)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "x-device-key",
+                                "value": "{{deviceKey}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"viaje_id\": \"VIAJE_ID_HERE\",\n    \"operador_id\": \"OPERADOR_ID_HERE\",\n    \"tracto_id\": \"TRACTO_ID_HERE\",\n    \"apto\": false,\n    \"bmp\": 132,\n    \"fecha\": \"2025-09-23T14:05:00Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/dictamenes",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "dictamenes"
+                            ]
+                        },
+                        "description": "Creates a new dictamen from a device. Requires 'x-device-key' header. Replace example data with actual values. `operador_id`, `viaje_id`, `tracto_id` should be valid IDs from existing records."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Alertas",
+            "item": [
+                {
+                    "name": "Get All Critical Alertas",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/alertas?page=1&per_page=10&order_by=fecha&order=desc",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "alertas"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "order_by",
+                                    "value": "fecha"
+                                },
+                                {
+                                    "key": "order",
+                                    "value": "desc"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a paginated list of all critical alerts (tipo=no_apto). Supports filtering by 'leida', 'operador_id', 'from', 'to', sorting, and pagination. Default per_page is 10."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Mark Alerta as Read",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/alertas/:id/leida",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "alertas",
+                                ":id",
+                                "leida"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "ALERTA_ID_HERE",
+                                    "description": "Replace with an actual Alerta ID"
+                                }
+                            ]
+                        },
+                        "description": "Marks an alert as read by its ID."
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://127.0.0.1:8000/api",
+            "type": "string"
+        },
+        {
+            "key": "deviceKey",
+            "value": "ESP32-KEY-123",
+            "type": "string"
+        },
+        {
+            "key": "jwtToken",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
