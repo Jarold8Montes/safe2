@@ -14,7 +14,6 @@ class OperadorController extends Controller
         $q = Operador::query();
 
         if ($req->filled('q')) {
-            // preferencia por text index
             $q->whereRaw(['$text' => ['$search' => $req->q]]);
         }
 
@@ -38,7 +37,7 @@ class OperadorController extends Controller
         if ($q==='') return response()->json([]);
 
         // resultado reducido
-        $res = Operador::whereRaw(['$text'=>['$search'=>$q]])
+        $res = Operador::where('nombre', 'regexp', "/$q/i")
             ->limit(20)
             ->get(['_id','id_operador','nombre']);
 
