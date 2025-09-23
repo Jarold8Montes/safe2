@@ -11,16 +11,25 @@ class AuthController extends Controller
     {
         $credentials = $r->only('email','password');
         if (!$token = Auth::guard('api')->attempt($credentials)) {
-            return response()->json(['error'=>['code'=>'UNAUTHORIZED']], 401);
+            return $this->sendError('UNAUTHORIZED', [], 401);
         }
-        return response()->json([
+        return $this->sendResponse([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => Auth::guard('api')->factory()->getTTL() * 60,
             'user' => Auth::guard('api')->user(['_id','nombre','rol'])
-        ]);
+        ], 'Login exitoso', 200);
     }
 
-    public function refresh() { return response()->json(['access_token'=>Auth::guard('api')->refresh()]); }
-    public function logout()  { Auth::guard('api')->logout(); return response()->json(['ok'=>true]); }
+    public function refresh()
+    {
+        return $this->sendResponse([
+            'access_token' => Auth::guard('api')->refresh()
+        ], 'Token refrescado', 200);
+    }
+    public function logout()
+    {
+        Auth::guard('api')->logout();
+        return $this->sendResponse([], 'Sesión cerrada', 200);
+    }
 }

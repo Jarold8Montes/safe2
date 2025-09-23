@@ -24,11 +24,28 @@ class TractoController extends Controller
         $items = $q->orderBy($orderBy,$order)
                    ->paginate(min(100,(int)$req->get('per_page',10)));
 
-        return response()->json($items);
+        return $this->sendResponse($items, 'Tractos listados correctamente', 200);
     }
 
-    public function show(string $id)  { return response()->json(Tracto::findOrFail($id)); }
-    public function store(StoreTractoRequest $req) { $tracto = Tracto::create($req->validated()); return response()->json($tracto,201); }
-    public function update(string $id, UpdateTractoRequest $req) { $tracto=Tracto::findOrFail($id); $tracto->update($req->validated()); return response()->json($tracto); }
-    public function destroy(string $id) { Tracto::findOrFail($id)->delete(); return response()->json([],204); }
+    public function show(string $id)
+    {
+        $tracto = Tracto::findOrFail($id);
+        return $this->sendResponse($tracto, 'Tracto encontrado', 200);
+    }
+    public function store(StoreTractoRequest $req)
+    {
+        $tracto = Tracto::create($req->validated());
+        return $this->sendResponse($tracto, 'Tracto creado correctamente', 201);
+    }
+    public function update(string $id, UpdateTractoRequest $req)
+    {
+        $tracto=Tracto::findOrFail($id);
+        $tracto->update($req->validated());
+        return $this->sendResponse($tracto, 'Tracto actualizado correctamente', 200);
+    }
+    public function destroy(string $id)
+    {
+        Tracto::findOrFail($id)->delete();
+        return $this->sendResponse([], 'Tracto eliminado correctamente', 204);
+    }
 }

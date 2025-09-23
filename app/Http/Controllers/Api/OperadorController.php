@@ -23,24 +23,45 @@ class OperadorController extends Controller
         $items = $q->orderBy($orderBy,$order)
                    ->paginate(min(100,(int)$req->get('per_page',10)));
 
-        return response()->json($items);
+        return $this->sendResponse($items, 'Operadores listados correctamente', 200);
     }
 
-    public function show(string $id)  { return response()->json(Operador::findOrFail($id)); }
-    public function store(StoreOperadorRequest $req) { $op = Operador::create($req->validated()); return response()->json($op,201); }
-    public function update(string $id, UpdateOperadorRequest $req) { $op=Operador::findOrFail($id); $op->update($req->validated()); return response()->json($op); }
-    public function destroy(string $id) { Operador::findOrFail($id)->delete(); return response()->json([],204); }
+    public function show(string $id)
+    {
+        $operador = Operador::findOrFail($id);
+        return $this->sendResponse($operador, 'Operador encontrado', 200);
+    }
+    public function store(StoreOperadorRequest $req)
+    {
+        $op = Operador::create($req->validated());
+        return $this->sendResponse($op, 'Operador creado correctamente', 201);
+    }
+    public function update(string $id, UpdateOperadorRequest $req)
+    {
+        $op=Operador::findOrFail($id);
+        $op->update($req->validated());
+        return $this->sendResponse($op, 'Operador actualizado correctamente', 200);
+    }
+    public function destroy(string $id)
+    {
+        Operador::findOrFail($id)->delete();
+        return $this->sendResponse([], 'Operador eliminado correctamente', 204);
+    }
 
     public function search(Request $req)
     {
         $q = trim($req->get('q',''));
-        if ($q==='') return response()->json([]);
+        if ($q==='') return $this->sendResponse([], 'No hay coincidencias', 200); // Or handle as an error if empty query is an error
 
         // resultado reducido
         $res = Operador::where('nombre', 'regexp', "/$q/i")
             ->limit(20)
             ->get(['_id','id_operador','nombre']);
 
-        return response()->json($res);
+        if ($res->isEmpty()) {
+            return $this->sendError('No hay coincidencias', [], 404);
+        }
+
+        return $this->sendResponse($res, 'Operadores encontrados', 200);
     }
 }

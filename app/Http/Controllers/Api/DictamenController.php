@@ -29,23 +29,23 @@ class DictamenController extends Controller
         $dicts = $q->orderBy($orderBy, $order)
                    ->paginate(min(100, (int)$req->get('per_page', 10)));
 
-        return response()->json($dicts);
+        return $this->sendResponse($dicts, 'Dictámenes listados correctamente', 200);
     }
 
     public function show(string $id)
     {
         $d = Dictamen::findOrFail($id);
-        return response()->json($d);
+        return $this->sendResponse($d, 'Dictamen encontrado', 200);
     }
 
     public function store(StoreDictamenRequest $req)
     {
         // (Opcional) validar que operador/viaje existan
         if (!Operador::find($req->operador_id)) {
-            return response()->json(['error'=>['code'=>'NOT_FOUND','message'=>'operador_id inválido']], 422);
+            return $this->sendError('operador_id inválido', [], 422);
         }
         if ($req->filled('viaje_id') && !Viaje::find($req->viaje_id)) {
-            return response()->json(['error'=>['code'=>'NOT_FOUND','message'=>'viaje_id inválido']], 422);
+            return $this->sendError('viaje_id inválido', [], 422);
         }
 
         $d = Dictamen::create($req->validated());
@@ -56,7 +56,7 @@ class DictamenController extends Controller
             'dictamen_id' => (string)$d->_id,
         ]);
 
-        return response()->json(['dictamen'=>$d, 'alerta'=>$alerta], 201);
+        return $this->sendResponse(['dictamen'=>$d, 'alerta'=>$alerta], 'Dictamen creado correctamente', 201);
     }
 
     public function historialPorOperador(string $id, Request $req)
@@ -79,11 +79,11 @@ class DictamenController extends Controller
             'id_viaje'=> $d->viaje_id ? (Viaje::find($d->viaje_id)->id_viaje ?? null) : null,
         ]);
 
-        return response()->json([
+        return $this->sendResponse([
             'data' => $data,
             'page' => $page->currentPage(),
             'per_page' => $page->perPage(),
             'total' => $page->total()
-        ]);
+        ], 'Historial de dictámenes por operador listado correctamente', 200);
     }
 }

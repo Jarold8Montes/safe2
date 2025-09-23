@@ -27,13 +27,30 @@ class ViajeController extends Controller
         $items = $q->orderBy($orderBy,$order)
                    ->paginate(min(100,(int)$req->get('per_page',10)));
 
-        return response()->json($items);
+        return $this->sendResponse($items, 'Viajes listados correctamente', 200);
     }
 
-    public function show(string $id)  { return response()->json(Viaje::findOrFail($id)); }
-    public function store(StoreViajeRequest $req) { $viaje = Viaje::create($req->validated()); return response()->json($viaje,201); }
-    public function update(string $id, UpdateViajeRequest $req) { $viaje=Viaje::findOrFail($id); $viaje->update($req->validated()); return response()->json($viaje); }
-    public function destroy(string $id) { Viaje::findOrFail($id)->delete(); return response()->json([],204); }
+    public function show(string $id)
+    {
+        $viaje = Viaje::findOrFail($id);
+        return $this->sendResponse($viaje, 'Viaje encontrado', 200);
+    }
+    public function store(StoreViajeRequest $req)
+    {
+        $viaje = Viaje::create($req->validated());
+        return $this->sendResponse($viaje, 'Viaje creado correctamente', 201);
+    }
+    public function update(string $id, UpdateViajeRequest $req)
+    {
+        $viaje=Viaje::findOrFail($id);
+        $viaje->update($req->validated());
+        return $this->sendResponse($viaje, 'Viaje actualizado correctamente', 200);
+    }
+    public function destroy(string $id)
+    {
+        Viaje::findOrFail($id)->delete();
+        return $this->sendResponse([], 'Viaje eliminado correctamente', 204);
+    }
 
     public function cambiarEstado(string $id, Request $req)
     {
@@ -43,6 +60,6 @@ class ViajeController extends Controller
         ]);
         $viaje->estado = $req->estado;
         $viaje->save();
-        return response()->json($viaje);
+        return $this->sendResponse($viaje, 'Estado del viaje actualizado correctamente', 200);
     }
 }

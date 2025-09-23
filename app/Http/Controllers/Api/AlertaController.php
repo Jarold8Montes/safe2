@@ -75,12 +75,12 @@ class AlertaController extends Controller
             ];
         });
 
-        return response()->json([
+        return $this->sendResponse([
             'data' => $enriched,
             'page' => $page->currentPage(),
             'per_page' => $page->perPage(),
             'total' => $page->total()
-        ]);
+        ], 'Alertas listadas correctamente', 200);
     }
 
     public function marcarLeida(string $id)
@@ -88,6 +88,6 @@ class AlertaController extends Controller
         $a = Alerta::findOrFail($id);
         $a->leida = true;
         $a->save();
-        return response()->json(['ok'=>true]);
+        return $this->sendResponse([], 'Alerta marcada como leída', 200);
     }
 }
