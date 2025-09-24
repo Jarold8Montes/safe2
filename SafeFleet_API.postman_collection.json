@@ -1,9 +1,9 @@
 {
     "info": {
-        "_postman_id": "",
+        "_postman_id": "safe-fleet-api-collection",
         "name": "SafeFleet API",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-        "_exporter_id": ""
+        "description": "API completa para el sistema de monitoreo de flota SafeFleet",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
         {
@@ -36,7 +36,8 @@
                                 "exec": [
                                     "var jsonData = pm.response.json();",
                                     "if (jsonData.code === 200 && jsonData.data && jsonData.data.access_token) {",
-                                    "        pm.environment.set(\"jwtToken\", jsonData.data.access_token);",
+                                    "    pm.environment.set(\"jwtToken\", jsonData.data.access_token);",
+                                    "    console.log('JWT token saved:', jsonData.data.access_token);",
                                     "}"
                                 ],
                                 "type": "text/javascript"
@@ -53,7 +54,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"supervisor@example.com\",\n    \"password\": \"password\"\n}"
+                            "raw": "{\n    \"email\": \"michi@safefleet.com\",\n    \"password\": \"$SafeFleet2025\"\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/auth/login",
@@ -79,6 +80,7 @@
                                     "var jsonData = pm.response.json();",
                                     "if (jsonData.code === 200 && jsonData.data && jsonData.data.access_token) {",
                                     "    pm.environment.set(\"jwtToken\", jsonData.data.access_token);",
+                                    "    console.log('JWT token refreshed:', jsonData.data.access_token);",
                                     "}"
                                 ],
                                 "type": "text/javascript"
@@ -99,7 +101,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": ""
+                            "raw": "{}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/auth/refresh",
@@ -131,7 +133,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": ""
+                            "raw": "{}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/auth/logout",
@@ -156,7 +158,12 @@
                     "name": "Get All Operadores",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{baseUrl}}/v1/operadores?page=1&per_page=10&order_by=created_at&order=desc",
                             "host": [
@@ -193,23 +200,21 @@
                     "name": "Get Operador by ID",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
-                            "raw": "{{baseUrl}}/v1/operadores/:id",
+                            "raw": "{{baseUrl}}/v1/operadores/OP-12345",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "operadores",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "OPERADOR_ID_HERE",
-                                    "description": "Replace with an actual Operador ID"
-                                }
+                                "OP-12345"
                             ]
                         },
                         "description": "Retrieves a single operator by their MongoDB _id or custom id_operador."
@@ -224,6 +229,10 @@
                             {
                                 "key": "Content-Type",
                                 "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
                             }
                         ],
                         "body": {
@@ -252,6 +261,10 @@
                             {
                                 "key": "Content-Type",
                                 "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
                             }
                         ],
                         "body": {
@@ -259,21 +272,14 @@
                             "raw": "{\n    \"nombre\": \"Juan Carlos Perez\",\n    \"telefono\": \"+525587654321\",\n    \"genero\": \"masculino\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/v1/operadores/:id",
+                            "raw": "{{baseUrl}}/v1/operadores/OP-12345",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "operadores",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "OPERADOR_ID_HERE",
-                                    "description": "Replace with an actual Operador ID"
-                                }
+                                "OP-12345"
                             ]
                         },
                         "description": "Updates an existing operator by their MongoDB _id or custom id_operador. Replace example data with actual values."
@@ -284,23 +290,21 @@
                     "name": "Delete Operador",
                     "request": {
                         "method": "DELETE",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
-                            "raw": "{{baseUrl}}/v1/operadores/:id",
+                            "raw": "{{baseUrl}}/v1/operadores/OP-12345",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "operadores",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "OPERADOR_ID_HERE",
-                                    "description": "Replace with an actual Operador ID"
-                                }
+                                "OP-12345"
                             ]
                         },
                         "description": "Deletes an operator by its MongoDB _id or custom id_operador."
@@ -311,7 +315,12 @@
                     "name": "Search Operadores",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{baseUrl}}/v1/search/operadores?q=Juan",
                             "host": [
@@ -325,8 +334,7 @@
                             "query": [
                                 {
                                     "key": "q",
-                                    "value": "Juan",
-                                    "description": "Search query for operator name"
+                                    "value": "Juan"
                                 }
                             ]
                         },
@@ -338,9 +346,14 @@
                     "name": "Historial por Operador",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
-                            "raw": "{{baseUrl}}/v1/historial/operador/:id?from=2025-01-01&to=2025-12-31&order_by=fecha&order=desc",
+                            "raw": "{{baseUrl}}/v1/historial/operador/OP-12345?from=2025-01-01&to=2025-12-31&order_by=fecha&order=desc",
                             "host": [
                                 "{{baseUrl}}"
                             ],
@@ -348,18 +361,16 @@
                                 "v1",
                                 "historial",
                                 "operador",
-                                ":id"
+                                "OP-12345"
                             ],
                             "query": [
                                 {
                                     "key": "from",
-                                    "value": "2025-01-01",
-                                    "description": "Start date for filtering dictamenes"
+                                    "value": "2025-01-01"
                                 },
                                 {
                                     "key": "to",
-                                    "value": "2025-12-31",
-                                    "description": "End date for filtering dictamenes"
+                                    "value": "2025-12-31"
                                 },
                                 {
                                     "key": "order_by",
@@ -369,16 +380,34 @@
                                     "key": "order",
                                     "value": "desc"
                                 }
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "OPERADOR_ID_HERE",
-                                    "description": "Replace with an actual Operador ID"
-                                }
                             ]
                         },
                         "description": "Retrieves the history of dictamenes for a specific operator. Supports date filtering, sorting, and pagination."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get BPM Range for Operador",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/v1/rangobpm/OP-12345",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "rangobpm",
+                                "OP-12345"
+                            ]
+                        },
+                        "description": "Calculates the recommended minimum and maximum BPM range for a given operator based on their age and risk factors."
                     },
                     "response": []
                 }
@@ -391,7 +420,12 @@
                     "name": "Get All Tractos",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{baseUrl}}/v1/tractos?page=1&per_page=10&order_by=created_at&order=desc",
                             "host": [
@@ -428,23 +462,21 @@
                     "name": "Get Tracto by ID",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
-                            "raw": "{{baseUrl}}/v1/tractos/:tracto",
+                            "raw": "{{baseUrl}}/v1/tractos/TR-54321",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "tractos",
-                                ":tracto"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "tracto",
-                                    "value": "TRACTO_ID_HERE",
-                                    "description": "Replace with an actual Tracto ID"
-                                }
+                                "TR-54321"
                             ]
                         },
                         "description": "Retrieves a single tracto by its MongoDB _id or custom id_tracto."
@@ -459,6 +491,10 @@
                             {
                                 "key": "Content-Type",
                                 "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
                             }
                         ],
                         "body": {
@@ -487,6 +523,10 @@
                             {
                                 "key": "Content-Type",
                                 "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
                             }
                         ],
                         "body": {
@@ -494,21 +534,14 @@
                             "raw": "{\n    \"modelo\": \"FH16 2023\",\n    \"activo\": false,\n    \"is_engine_on\": true\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/v1/tractos/:tracto",
+                            "raw": "{{baseUrl}}/v1/tractos/TR-54321",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "tractos",
-                                ":tracto"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "tracto",
-                                    "value": "TRACTO_ID_HERE",
-                                    "description": "Replace with an actual Tracto ID"
-                                }
+                                "TR-54321"
                             ]
                         },
                         "description": "Updates an existing tracto by its MongoDB _id or custom id_tracto. Replace example data with actual values."
@@ -519,23 +552,21 @@
                     "name": "Delete Tracto",
                     "request": {
                         "method": "DELETE",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
-                            "raw": "{{baseUrl}}/v1/tractos/:tracto",
+                            "raw": "{{baseUrl}}/v1/tractos/TR-54321",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "tractos",
-                                ":tracto"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "tracto",
-                                    "value": "TRACTO_ID_HERE",
-                                    "description": "Replace with an actual Tracto ID"
-                                }
+                                "TR-54321"
                             ]
                         },
                         "description": "Deletes a tracto by its MongoDB _id or custom id_tracto."
@@ -551,7 +582,12 @@
                     "name": "Get All Viajes",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{baseUrl}}/v1/viajes?page=1&per_page=10&order_by=fecha&order=desc",
                             "host": [
@@ -588,23 +624,21 @@
                     "name": "Get Viaje by ID",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
-                            "raw": "{{baseUrl}}/v1/viajes/:id",
+                            "raw": "{{baseUrl}}/v1/viajes/VJ-98765",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "viajes",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "VIAJE_ID_HERE",
-                                    "description": "Replace with an actual Viaje ID"
-                                }
+                                "VJ-98765"
                             ]
                         },
                         "description": "Retrieves a single viaje by its MongoDB _id or custom id_viaje."
@@ -619,11 +653,15 @@
                             {
                                 "key": "Content-Type",
                                 "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
                             }
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"id_viaje\": \"VJ-98765\",\n    \"origen\": \"Mexico City\",\n    \"destino\": \"Guadalajara\",\n    \"fecha\": \"2025-09-23T10:00:00Z\",\n    \"operador_id\": \"OPERADOR_ID_HERE\",\n    \"tracto_id\": \"TRACTO_ID_HERE\",\n    \"estado\": \"pendiente\"\n}"
+                            "raw": "{\n    \"id_viaje\": \"VJ-98765\",\n    \"origen\": \"Mexico City\",\n    \"destino\": \"Guadalajara\",\n    \"fecha\": \"2025-09-23T10:00:00Z\",\n    \"operador_id\": \"OP-12345\",\n    \"tracto_id\": \"TR-54321\",\n    \"estado\": \"pendiente\"\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/v1/viajes",
@@ -647,6 +685,10 @@
                             {
                                 "key": "Content-Type",
                                 "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
                             }
                         ],
                         "body": {
@@ -654,21 +696,14 @@
                             "raw": "{\n    \"estado\": \"en_curso\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/v1/viajes/:id",
+                            "raw": "{{baseUrl}}/v1/viajes/VJ-98765",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "viajes",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "VIAJE_ID_HERE",
-                                    "description": "Replace with an actual Viaje ID"
-                                }
+                                "VJ-98765"
                             ]
                         },
                         "description": "Updates an existing viaje by its MongoDB _id or custom id_viaje. Replace example data with actual values."
@@ -683,6 +718,10 @@
                             {
                                 "key": "Content-Type",
                                 "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
                             }
                         ],
                         "body": {
@@ -690,22 +729,15 @@
                             "raw": "{\n    \"estado\": \"completado\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/v1/viajes/:id/estado",
+                            "raw": "{{baseUrl}}/v1/viajes/VJ-98765/estado",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "viajes",
-                                ":id",
+                                "VJ-98765",
                                 "estado"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "VIAJE_ID_HERE",
-                                    "description": "Replace with an actual Viaje ID"
-                                }
                             ]
                         },
                         "description": "Changes the status of a viaje by its MongoDB _id or custom id_viaje. Valid states: 'pendiente', 'en_curso', 'completado', 'cancelado'."
@@ -716,23 +748,21 @@
                     "name": "Delete Viaje",
                     "request": {
                         "method": "DELETE",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
-                            "raw": "{{baseUrl}}/v1/viajes/:id",
+                            "raw": "{{baseUrl}}/v1/viajes/VJ-98765",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "viajes",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "VIAJE_ID_HERE",
-                                    "description": "Replace with an actual Viaje ID"
-                                }
+                                "VJ-98765"
                             ]
                         },
                         "description": "Deletes a viaje by its MongoDB _id or custom id_viaje."
@@ -748,7 +778,12 @@
                     "name": "Get All Dictamenes",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{baseUrl}}/v1/dictamenes?page=1&per_page=10&order_by=fecha&order=desc",
                             "host": [
@@ -785,23 +820,21 @@
                     "name": "Get Dictamen by ID",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
-                            "raw": "{{baseUrl}}/v1/dictamenes/:id",
+                            "raw": "{{baseUrl}}/v1/dictamenes/65f1a2b3c4d5e6f7a8b9c0d1",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "dictamenes",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "DICTAMEN_ID_HERE",
-                                    "description": "Replace with an actual Dictamen ID"
-                                }
+                                "65f1a2b3c4d5e6f7a8b9c0d1"
                             ]
                         },
                         "description": "Retrieves a single dictamen by its MongoDB _id."
@@ -824,7 +857,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"viaje_id\": \"VIAJE_ID_HERE\",\n    \"operador_id\": \"OPERADOR_ID_HERE\",\n    \"tracto_id\": \"TRACTO_ID_HERE\",\n    \"apto\": true,\n    \"bmp\": 120,\n    \"fecha\": \"2025-09-23T14:05:00Z\"\n}"
+                            "raw": "{\n    \"viaje_id\": \"VJ-98765\",\n    \"operador_id\": \"OP-12345\",\n    \"tracto_id\": \"TR-54321\",\n    \"apto\": true,\n    \"bmp\": 120,\n    \"fecha\": \"2025-09-23T14:05:00Z\"\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/v1/dictamenes",
@@ -856,7 +889,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"viaje_id\": \"VIAJE_ID_HERE\",\n    \"operador_id\": \"OPERADOR_ID_HERE\",\n    \"tracto_id\": \"TRACTO_ID_HERE\",\n    \"apto\": false,\n    \"bmp\": 132,\n    \"fecha\": \"2025-09-23T14:05:00Z\"\n}"
+                            "raw": "{\n    \"viaje_id\": \"VJ-98765\",\n    \"operador_id\": \"OP-12345\",\n    \"tracto_id\": \"TR-54321\",\n    \"apto\": false,\n    \"bmp\": 132,\n    \"fecha\": \"2025-09-23T14:05:00Z\"\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/v1/dictamenes",
@@ -881,7 +914,12 @@
                     "name": "Get All Critical Alertas",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{baseUrl}}/v1/alertas?page=1&per_page=10&order_by=fecha&order=desc",
                             "host": [
@@ -918,24 +956,22 @@
                     "name": "Mark Alerta as Read",
                     "request": {
                         "method": "PATCH",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwtToken}}"
+                            }
+                        ],
                         "url": {
-                            "raw": "{{baseUrl}}/v1/alertas/:id/leida",
+                            "raw": "{{baseUrl}}/v1/alertas/65f1a2b3c4d5e6f7a8b9c0d2/leida",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "v1",
                                 "alertas",
-                                ":id",
+                                "65f1a2b3c4d5e6f7a8b9c0d2",
                                 "leida"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "ALERTA_ID_HERE",
-                                    "description": "Replace with an actual Alerta ID"
-                                }
                             ]
                         },
                         "description": "Marks an alert as read by its MongoDB _id."
@@ -951,7 +987,7 @@
             "script": {
                 "type": "text/javascript",
                 "exec": [
-                    ""
+                    "// Pre-request script can be used for setting up variables or headers"
                 ]
             }
         },
@@ -960,7 +996,10 @@
             "script": {
                 "type": "text/javascript",
                 "exec": [
-                    ""
+                    "// Global test script for common assertions",
+                    "pm.test(\"Status code is 200\", function () {",
+                    "    pm.response.to.have.status(200);",
+                    "});"
                 ]
             }
         }
@@ -969,17 +1008,22 @@
         {
             "key": "baseUrl",
             "value": "http://127.0.0.1:8000/api",
-            "type": "string"
+            "type": "string",
+            "description": "Base URL for the API"
         },
         {
             "key": "deviceKey",
             "value": "ESP32-KEY-123",
-            "type": "string"
+            "type": "string",
+            "description": "Device key for hardware authentication"
         },
         {
             "key": "jwtToken",
             "value": "",
-            "type": "string"
+            "type": "string",
+            "description": "JWT token for authenticated requests"
         }
-    ]
+    ],
+    "auth": null,
+    "protocolProfileBehavior": {}
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\TractoController;
 use App\Http\Controllers\Api\ViajeController;
 use App\Http\Controllers\Api\DictamenController;
 use App\Http\Controllers\Api\AlertaController;
+use App\Http\Controllers\Api\RangoBPMController;
 use App\Http\Middleware\DeviceKey;
 
 Route::get('/health', fn() => response()->json(['status'=>'ok']));
@@ -24,6 +25,8 @@ Route::prefix('v1')->group(function () { // Removed middleware
   Route::post('/operadores', [OperadorController::class, 'store']);
   Route::put('/operadores/{id}', [OperadorController::class, 'update']);
   Route::delete('/operadores/{id}', [OperadorController::class, 'destroy']);
+
+  Route::get('/rangobpm/{id_operador}', [RangoBPMController::class, 'calculate']);
 
   Route::get('/search/operadores', [OperadorController::class, 'search']);
   Route::get('/historial/operador/{id}', [DictamenController::class, 'historialPorOperador']);
