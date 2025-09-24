@@ -29,7 +29,18 @@ class TractoController extends Controller
 
     public function show(string $id)
     {
-        $tracto = Tracto::findOrFail($id);
+        // Check if the provided ID is a valid MongoDB ObjectId
+        if (preg_match('/^[0-9a-f]{24}$/i', $id)) {
+            $tracto = Tracto::find($id);
+        } else {
+            // Assume it's an id_tracto
+            $tracto = Tracto::where('id_tracto', $id)->first();
+        }
+
+        if (!$tracto) {
+            return $this->sendError('Tracto no encontrado', [], 404);
+        }
+
         return $this->sendResponse($tracto, 'Tracto encontrado', 200);
     }
     public function store(StoreTractoRequest $req)
@@ -39,13 +50,34 @@ class TractoController extends Controller
     }
     public function update(string $id, UpdateTractoRequest $req)
     {
-        $tracto=Tracto::findOrFail($id);
+        // Find the tracto by either MongoDB _id or id_tracto
+        if (preg_match('/^[0-9a-f]{24}$/i', $id)) {
+            $tracto = Tracto::find($id);
+        } else {
+            $tracto = Tracto::where('id_tracto', $id)->first();
+        }
+
+        if (!$tracto) {
+            return $this->sendError('Tracto no encontrado', [], 404);
+        }
+
         $tracto->update($req->validated());
         return $this->sendResponse($tracto, 'Tracto actualizado correctamente', 200);
     }
     public function destroy(string $id)
     {
-        Tracto::findOrFail($id)->delete();
+        // Find the tracto by either MongoDB _id or id_tracto
+        if (preg_match('/^[0-9a-f]{24}$/i', $id)) {
+            $tracto = Tracto::find($id);
+        } else {
+            $tracto = Tracto::where('id_tracto', $id)->first();
+        }
+
+        if (!$tracto) {
+            return $this->sendError('Tracto no encontrado', [], 404);
+        }
+
+        $tracto->delete();
         return $this->sendResponse([], 'Tracto eliminado correctamente', 204);
     }
 }

@@ -85,7 +85,12 @@ class AlertaController extends Controller
 
     public function marcarLeida(string $id)
     {
-        $a = Alerta::findOrFail($id);
+        $a = Alerta::find($id);
+
+        if (!$a) {
+            return $this->sendError('Alerta no encontrada', [], 404);
+        }
+
         $a->leida = true;
         $a->save();
         return $this->sendResponse([], 'Alerta marcada como leída', 200);

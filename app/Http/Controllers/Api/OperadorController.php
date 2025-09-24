@@ -28,7 +28,18 @@ class OperadorController extends Controller
 
     public function show(string $id)
     {
-        $operador = Operador::findOrFail($id);
+        // Check if the provided ID is a valid MongoDB ObjectId
+        if (preg_match('/^[0-9a-f]{24}$/i', $id)) {
+            $operador = Operador::find($id);
+        } else {
+            // Assume it's an id_operador
+            $operador = Operador::where('id_operador', $id)->first();
+        }
+
+        if (!$operador) {
+            return $this->sendError('Operador no encontrado', [], 404);
+        }
+
         return $this->sendResponse($operador, 'Operador encontrado', 200);
     }
     public function store(StoreOperadorRequest $req)
@@ -38,13 +49,34 @@ class OperadorController extends Controller
     }
     public function update(string $id, UpdateOperadorRequest $req)
     {
-        $op=Operador::findOrFail($id);
+        // Find the operator by either MongoDB _id or id_operador
+        if (preg_match('/^[0-9a-f]{24}$/i', $id)) {
+            $op = Operador::find($id);
+        } else {
+            $op = Operador::where('id_operador', $id)->first();
+        }
+
+        if (!$op) {
+            return $this->sendError('Operador no encontrado', [], 404);
+        }
+
         $op->update($req->validated());
         return $this->sendResponse($op, 'Operador actualizado correctamente', 200);
     }
     public function destroy(string $id)
     {
-        Operador::findOrFail($id)->delete();
+        // Find the operator by either MongoDB _id or id_operador
+        if (preg_match('/^[0-9a-f]{24}$/i', $id)) {
+            $op = Operador::find($id);
+        } else {
+            $op = Operador::where('id_operador', $id)->first();
+        }
+
+        if (!$op) {
+            return $this->sendError('Operador no encontrado', [], 404);
+        }
+
+        $op->delete();
         return $this->sendResponse([], 'Operador eliminado correctamente', 204);
     }
 

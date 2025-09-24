@@ -34,7 +34,12 @@ class DictamenController extends Controller
 
     public function show(string $id)
     {
-        $d = Dictamen::findOrFail($id);
+        $d = Dictamen::find($id);
+
+        if (!$d) {
+            return $this->sendError('Dictamen no encontrado', [], 404);
+        }
+
         return $this->sendResponse($d, 'Dictamen encontrado', 200);
     }
 

@@ -32,7 +32,18 @@ class ViajeController extends Controller
 
     public function show(string $id)
     {
-        $viaje = Viaje::findOrFail($id);
+        // Check if the provided ID is a valid MongoDB ObjectId
+        if (preg_match('/^[0-9a-f]{24}$/i', $id)) {
+            $viaje = Viaje::find($id);
+        } else {
+            // Assume it's an id_viaje
+            $viaje = Viaje::where('id_viaje', $id)->first();
+        }
+
+        if (!$viaje) {
+            return $this->sendError('Viaje no encontrado', [], 404);
+        }
+
         return $this->sendResponse($viaje, 'Viaje encontrado', 200);
     }
     public function store(StoreViajeRequest $req)
@@ -42,13 +53,34 @@ class ViajeController extends Controller
     }
     public function update(string $id, UpdateViajeRequest $req)
     {
-        $viaje=Viaje::findOrFail($id);
+        // Find the viaje by either MongoDB _id or id_viaje
+        if (preg_match('/^[0-9a-f]{24}$/i', $id)) {
+            $viaje = Viaje::find($id);
+        } else {
+            $viaje = Viaje::where('id_viaje', $id)->first();
+        }
+
+        if (!$viaje) {
+            return $this->sendError('Viaje no encontrado', [], 404);
+        }
+
         $viaje->update($req->validated());
         return $this->sendResponse($viaje, 'Viaje actualizado correctamente', 200);
     }
     public function destroy(string $id)
     {
-        Viaje::findOrFail($id)->delete();
+        // Find the viaje by either MongoDB _id or id_viaje
+        if (preg_match('/^[0-9a-f]{24}$/i', $id)) {
+            $viaje = Viaje::find($id);
+        } else {
+            $viaje = Viaje::where('id_viaje', $id)->first();
+        }
+
+        if (!$viaje) {
+            return $this->sendError('Viaje no encontrado', [], 404);
+        }
+
+        $viaje->delete();
         return $this->sendResponse([], 'Viaje eliminado correctamente', 204);
     }
 
