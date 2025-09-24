@@ -28,16 +28,24 @@ class DatabaseSeeder extends Seeder
                 'foto_url' => $faker->imageUrl(640, 480, 'people', true),
                 'fecha_nacimiento' => $faker->dateTimeBetween('-50 years', '-18 years'), // Use fecha_nacimiento
                 'telefono' => $faker->phoneNumber(),
-                'factores_riesgo' => $faker->randomElements([
-                    'Hipertensión arterial',
-                    'Niveles elevados de colesterol o triglicéridos',
-                    'Obesidad o sobrepeso',
-                    'Diabetes o prediabetes',
-                    'Trastornos hormonales',
-                    'Sistema inmunológico debilitado',
-                    'ninguno'
-                ], $faker->numberBetween(1, 3)), // Use updated factores_riesgo
+                'factores_riesgo' => (function () use ($faker) {
+                    $riskFactors = [
+                        'Hipertensión arterial',
+                        'Niveles elevados de colesterol o triglicéridos',
+                        'Obesidad o sobrepeso',
+                        'Diabetes o prediabetes',
+                        'Trastornos hormonales',
+                        'Sistema inmunológico debilitado',
+                    ];
+                    if ($faker->boolean(20)) { // 20% chance of having no risk factors
+                        return ['ninguno'];
+                    } else {
+                        $numRiskFactors = $faker->numberBetween(1, count($riskFactors));
+                        return $faker->randomElements($riskFactors, $numRiskFactors);
+                    }
+                })(),
                 'activo' => $faker->boolean(),
+                'genero' => $faker->randomElement(['masculino', 'femenino']),
             ]);
             $operador->save();
             $operadores[] = $operador;

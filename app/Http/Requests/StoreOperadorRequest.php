@@ -15,6 +15,7 @@ class StoreOperadorRequest extends FormRequest
             'telefono'      => 'nullable|string|max:20',
             'factores_riesgo' => 'nullable|array',
             'activo'        => 'boolean',
+            'genero'        => 'nullable|string|max:50',
         ];
     }
 }

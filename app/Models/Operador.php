@@ -9,7 +9,7 @@ class Operador extends Model
 {
     protected $collection = 'operadores';
     protected $fillable = [
-        'id_operador','nombre','foto_url','fecha_nacimiento','telefono','factores_riesgo','activo'
+        'id_operador','nombre','foto_url','fecha_nacimiento','telefono','factores_riesgo','activo','genero'
     ];
     protected $casts = [
         'factores_riesgo' => 'array',
