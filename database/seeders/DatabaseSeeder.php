@@ -22,10 +22,11 @@ class DatabaseSeeder extends Seeder
         // Create 50 Operador records manually
         $operadores = [];
         for ($i = 0; $i < 50; $i++) {
+            $gender = $faker->randomElement(['male', 'female']);
             $operador = new Operador([
                 'id_operador' => 'OP-' . $faker->unique()->randomNumber(5),
                 'nombre' => $faker->name(),
-                'foto_url' => $faker->imageUrl(640, 480, 'people', true),
+                'foto_url' => 'https://xsgames.co/randomusers/avatar.php?g=' . $gender,
                 'fecha_nacimiento' => $faker->dateTimeBetween('-50 years', '-18 years'), // Use fecha_nacimiento
                 'telefono' => $faker->phoneNumber(),
                 'factores_riesgo' => (function () use ($faker) {
@@ -45,7 +46,7 @@ class DatabaseSeeder extends Seeder
                     }
                 })(),
                 'activo' => $faker->boolean(),
-                'genero' => $faker->randomElement(['masculino', 'femenino']),
+                'genero' => $gender == 'male' ? 'masculino' : 'femenino',
             ]);
             $operador->save();
             $operadores[] = $operador;

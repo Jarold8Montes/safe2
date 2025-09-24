@@ -1,65 +1,38 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
+use MongoDB\Laravel\Schema\Blueprint;
 
 return new class extends Migration {
     public function up(): void
     {
-        $manager = \Illuminate\Support\Facades\DB::connection('mongodb')->getMongoClient()->getManager();
-        $databaseName = \Illuminate\Support\Facades\DB::connection('mongodb')->getDatabaseName();
+        Schema::connection('mongodb')->table('operadores', function (Blueprint $collection) {
+            $collection->index('id_operador');
+            $collection->index(['nombre' => 'text']);
+        });
 
-        // Operadores
-        $manager->executeCommand($databaseName, new \MongoDB\Driver\Command([
-            'createIndexes' => 'operadores',
-            'indexes' => [
-                ['key' => ['id_operador' => 1], 'name' => 'id_operador_1'],
-                ['key' => ['nombre' => 'text'], 'name' => 'nombre_text'],
-            ],
-        ]));
+        Schema::connection('mongodb')->table('viajes', function (Blueprint $collection) {
+            $collection->index('fecha');
+            $collection->index('operador_id');
+            $collection->index('tracto_id');
+            $collection->index('id_viaje');
+        });
 
-        // Viajes
-        $manager->executeCommand($databaseName, new \MongoDB\Driver\Command([
-            'createIndexes' => 'viajes',
-            'indexes' => [
-                ['key' => ['fecha' => -1], 'name' => 'fecha_-1'],
-                ['key' => ['operador_id' => 1], 'name' => 'operador_id_1'],
-                ['key' => ['tracto_id' => 1], 'name' => 'tracto_id_1'],
-                ['key' => ['id_viaje' => 1], 'name' => 'id_viaje_1'],
-            ],
-        ]));
+        Schema::connection('mongodb')->table('dictamenes', function (Blueprint $collection) {
+            $collection->index(['operador_id' => 1, 'fecha' => -1]);
+            $collection->index(['viaje_id' => 1, 'fecha' => -1]);
+            $collection->index('apto');
+        });
 
-        // Dictamenes
-        $manager->executeCommand($databaseName, new \MongoDB\Driver\Command([
-            'createIndexes' => 'dictamenes',
-            'indexes' => [
-                ['key' => ['operador_id' => 1, 'fecha' => -1], 'name' => 'operador_id_1_fecha_-1'],
-                ['key' => ['viaje_id' => 1, 'fecha' => -1], 'name' => 'viaje_id_1_fecha_-1'],
-                ['key' => ['apto' => 1], 'name' => 'apto_1'],
-            ],
-        ]));
+        Schema::connection('mongodb')->table('alertas', function (Blueprint $collection) {
+            $collection->index(['leida' => 1, 'fecha' => -1]);
+            $collection->index('operador_id');
+        });
 
-        // Alertas
-        $manager->executeCommand($databaseName, new \MongoDB\Driver\Command([
-            'createIndexes' => 'alertas',
-            'indexes' => [
-                ['key' => ['leida' => 1, 'fecha' => -1], 'name' => 'leida_1_fecha_-1'],
-                ['key' => ['operador_id' => 1], 'name' => 'operador_id_1'],
-            ],
-        ]));
-
-        // Usuarios
-        // Drop the 'usuarios' collection if it exists to ensure a clean slate for unique index
-        try {
-            $manager->executeCommand($databaseName, new \MongoDB\Driver\Command(['drop' => 'usuarios']));
-        } catch (\MongoDB\Driver\Exception\CommandException $e) {
-            // Collection might not exist, ignore error
-        }
-        $manager->executeCommand($databaseName, new \MongoDB\Driver\Command([
-            'createIndexes' => 'usuarios',
-            'indexes' => [
-                ['key' => ['email' => 1], 'name' => 'email_1', 'unique' => true],
-            ],
-        ]));
+        Schema::connection('mongodb')->table('usuarios', function (Blueprint $collection) {
+            $collection->unique('email');
+        });
     }
 
     public function down(): void {}
