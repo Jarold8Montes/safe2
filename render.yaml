@@ -1,0 +1,45 @@
+services:
+  # Servicio Web para la API de Laravel
+  - type: web
+    name: api-safefleet
+    env: php
+    plan: free # Puedes cambiarlo a "starter" o superior para producción
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+      php artisan migrate --force
+    startCommand: vendor/bin/heroku-php-apache2 public/
+    envVars:
+      - key: APP_URL
+        value: ${RENDER_EXTERNAL_URL}
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: LOG_CHANNEL
+        value: stderr
+      # --- Conexión a la Base de Datos MongoDB ---
+      # Render inyectará la URL de conexión de la base de datos aquí
+      - key: DB_CONNECTION
+        value: mongodb
+      - key: MONGODB_URI
+        fromDatabase:
+          name: safefleet-mongo
+          property: connectionString
+      # --- Claves de la Aplicación ---
+      # ¡IMPORTANTE! Genera estas claves y guárdalas como "Secret Files" o variables secretas en el dashboard de Render.
+      - key: APP_KEY
+        generateValue: true # Render generará una clave aleatoria en el primer despliegue
+      - key: JWT_SECRET
+        generateValue: true # Render generará una clave aleatoria en el primer despliegue
+
+  # Servicio de Base de Datos MongoDB
+  - type: pserv
+    name: safefleet-mongo
+    env: mongodb
+    plan: free # Puedes cambiarlo a "starter" o superior para producción
+    disk:
+      name: mongo-data
+      sizeGB: 1
