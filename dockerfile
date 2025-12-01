@@ -5,17 +5,21 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
+    libssl-dev \
     libonig-dev \
     libxml2-dev \
     zip \
     unzip \
     nginx
 
-# Limpiar caché
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Instalar extensiones de PHP
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd \
+    # Instalar la extensión de MongoDB a través de PECL
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb
+
+# Limpiar caché de apt para reducir el tamaño de la imagen
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
