@@ -32,9 +32,9 @@ return [
     'connections' => [
 
         'mongodb' => [
-            'driver' => 'mongodb',
-            'dsn' => env('MONGODB_URI'),
-            'database' => env('MONGO_DB_DATABASE'),
+            'driver'   => 'mongodb',
+            'dsn'      => env('MONGODB_URI'),
+            'database' => null, // El nombre de la base de datos ya está en la DSN/URI.
         ],
 
     ],
