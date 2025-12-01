@@ -3,11 +3,12 @@
 # Salir inmediatamente si un comando falla.
 set -e
 
+# Cachear la configuración con las variables de entorno de producción
+echo "Caching configuration..."
+php artisan config:cache
+
 # Iniciar PHP-FPM en segundo plano
 php-fpm -D
-
-# Ejecutar migraciones (opcional)
-php artisan migrate --force
 
 # Iniciar Nginx
 nginx -g 'daemon off;'

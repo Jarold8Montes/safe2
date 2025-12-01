@@ -33,8 +33,8 @@ return [
 
         'mongodb' => [
             'driver'   => 'mongodb',
-            'dsn'      => env('MONGODB_URI'),
-            'database' => null, // El nombre de la base de datos ya está en la DSN/URI.
+            'dsn'      => env('MONGODB_URI', 'mongodb://localhost:27017'),
+            'database' => env('DB_DATABASE', 'homestead'),
         ],
 
     ],

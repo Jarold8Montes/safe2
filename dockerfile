@@ -4,8 +4,8 @@ FROM php:8.2-fpm
 RUN apt-get update && apt-get install -y \
     git \
     curl \
-    libpng-dev \
     libssl-dev \
+    libpng-dev \
     libonig-dev \
     libxml2-dev \
     zip \
@@ -32,6 +32,9 @@ COPY . .
 
 # Instalar dependencias de Laravel
 RUN composer install --no-dev --optimize-autoloader
+
+# Limpiar cualquier caché de configuración que pueda existir
+RUN php artisan config:clear
 
 # Configurar permisos
 RUN chown -R www-data:www-data /var/www \
