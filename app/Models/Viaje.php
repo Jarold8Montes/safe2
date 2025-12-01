@@ -6,6 +6,7 @@ use MongoDB\Laravel\Relations\BelongsTo;
 
 class Viaje extends Model
 {
+    protected $connection = 'mongodb';
     protected $collection = 'viajes';
     protected $fillable = [
         'id_viaje','origen','destino','fecha','operador_id','tracto_id','estado'

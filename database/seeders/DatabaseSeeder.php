@@ -48,6 +48,7 @@ class DatabaseSeeder extends Seeder
                 'activo' => $faker->boolean(),
                 'genero' => $gender == 'male' ? 'masculino' : 'femenino',
             ]);
+            $operador->setConnection('mongodb'); // Explicitly set connection
             $operador->save();
             $operadores[] = $operador;
         }

@@ -9,6 +9,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
+    protected $connection = 'mongodb';
     protected $collection = 'usuarios';
     protected $fillable = ['id_supervisor','nombre','email','password','rol','activo'];
     protected $hidden = ['password','remember_token'];

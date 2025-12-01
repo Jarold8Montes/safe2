@@ -6,6 +6,7 @@ use MongoDB\Laravel\Relations\BelongsTo;
 
 class Dictamen extends Model
 {
+    protected $connection = 'mongodb';
     protected $collection = 'dictamenes';
     protected $fillable = [
         'viaje_id','operador_id','tracto_id','apto','bmp','fecha'

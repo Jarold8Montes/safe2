@@ -8,6 +8,7 @@ use Carbon\Carbon;
 
 class Operador extends Model
 {
+    protected $connection = 'mongodb';
     protected $collection = 'operadores';
     protected $fillable = [
         'id_operador','nombre','foto_url','fecha_nacimiento','telefono','factores_riesgo','activo','genero'

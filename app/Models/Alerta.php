@@ -5,6 +5,7 @@ use MongoDB\Laravel\Eloquent\Model;
 
 class Alerta extends Model
 {
+    protected $connection = 'mongodb';
     protected $collection = 'alertas';
     protected $fillable = [
         'tipo','mensaje','operador_id','viaje_id','dictamen_id','leida','fecha'
